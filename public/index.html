@@ -1,0 +1,65 @@
+<style>
+    * {
+        font-family: Helvetica, Arial, sans-serif;
+    }
+    input {
+        font-size: 2rem;
+        border: 1px solid #999;
+        border-radius: 4px;
+        padding: 1rem;
+        display: block;
+    }
+    button {
+        font-size: 1rem;
+        border: 1px solid #999;
+        border-radius: 4px;
+        padding: 1rem;
+        background-color: limegreen;
+        display: block;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    button:hover {background-color: mediumspringgreen;}
+</style>
+<h1>Pasin mobiilirahansiirto Oy 💰💶💸</h1>
+
+<b>Olet lähettämässä tililtä:</b>
+<p id="from"></p>
+
+<b>Vastaanottajan puhelinnumero:</b>
+<input type="tel" placeholder="+358">
+
+<b>Rahasumma €:</b>
+<input type="number" placeholder="0 €">
+
+
+<button onclick="handleSendMoney()">🏹 Lähetä raha</button>
+
+<hr>
+
+<i>Ongelmatilanteissa voit olla yhteydessä yhtiömme toimitusjohtajaan Pasiin, nro. +358000000001</i>
+<script>
+
+const account = "+358000000004"
+
+function handleSendMoney() {
+    const to = document.querySelector("input[type=tel]").value
+    const amount = document.querySelector("input[type=number]").value
+    fetch("/api/send?from=" + encodeURIComponent(account) + "&to=" + encodeURIComponent(to) + "&amount=" + encodeURIComponent(amount))
+    .then(res => res.json())
+    .then(data => {
+        updateAccount(data)
+        alert(`${(data.status != "ok" ? "‼️‼️" : "")} ${data.message}`)
+    })
+}
+
+function updateAccount(data) {
+    document.querySelector("#from").innerHTML = `${data.account} - ${data.name} (💶 ${data.balance} €)`
+}
+
+fetch("/api/info?account=" + encodeURIComponent(account))
+    .then(res => res.json())
+    .then(data => {
+        updateAccount(data)
+    })
+</script>
