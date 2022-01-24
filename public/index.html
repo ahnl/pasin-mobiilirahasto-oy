@@ -48,7 +48,7 @@ function handleSendMoney() {
     fetch("/api/send?from=" + encodeURIComponent(account) + "&to=" + encodeURIComponent(to) + "&amount=" + encodeURIComponent(amount))
     .then(res => res.json())
     .then(data => {
-        updateAccount(data)
+        if (data.status == "ok") updateAccount(data)
         alert(`${(data.status != "ok" ? "‼️‼️" : "")} ${data.message}`)
     })
 }
